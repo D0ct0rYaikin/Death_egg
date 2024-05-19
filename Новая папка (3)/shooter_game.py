@@ -3,6 +3,7 @@ from pygame import *
 from random import *
 from time import sleep
 
+#загрузка звуков и создание надписей
 mixer.init()
 mixer.music.load('space.ogg')
 vzryv = mixer.Sound('vzryv.ogg')
@@ -17,6 +18,7 @@ win = font1.render('YOU WIN', True, (0, 255, 0))
 lose = font1.render('YOU LOSE', True, (255, 0, 0))
 mixer.music.play()
 
+#создание класса родителя
 class GameSprite(sprite.Sprite):
     def __init__(self, player_image, player_x, player_y, player_speed, x_size, y_size):
         super().__init__()
@@ -28,6 +30,7 @@ class GameSprite(sprite.Sprite):
     def reset(self):
         window.blit(self.image, (self.rect.x, self.rect.y))
 
+#создание класса наследника игрока
 class Hero(GameSprite):
     def move(self):
         key_pressed = key.get_pressed()
@@ -41,6 +44,7 @@ class Hero(GameSprite):
         bullet = Bullet('egg.png', sprite_center_x, sprite_top, 15, 10, 10)
         bullets.add(bullet)
 
+#создание класса наследника врага
 class Enemy(GameSprite):
     def update(self):
         self.rect.y += self.speed
@@ -52,14 +56,14 @@ class Enemy(GameSprite):
             self.rect.y = 0
             self.rect.x == start_x
 
-
+#создание класса наследника пули
 class Bullet(GameSprite):
     def update(self):
         self.rect.y -= self.speed
         if self.rect.y < 0:
             self.kill()
 
-
+#переменные
 amo = 0
 FPS = 60
 x2 = 683
@@ -71,6 +75,8 @@ y1 = 600
 x1 = 100
 y2 = 0
 x8 = 700
+
+#создания персонажа и первых врагов
 hero = Hero('rocket.png', x1, y1, 30, 65, 65)
 enemy1 = Enemy('ufo.png', x3, y2, 4, 65, 65)
 enemy2 = Enemy('ufo.png', x2, y2, 5, 65, 65)
@@ -78,6 +84,8 @@ enemy3 = Enemy('ufo.png', x4, y2, 6, 65, 65)
 enemy4 = Enemy('ufo.png', x5, y2, 7, 65, 65)
 enemy5 = Enemy('ufo.png', x6, y2, 8, 65, 65)
 asteroid = Enemy('asteroid.png', x8, y2, 3, 65, 65)
+
+#создание и работа с группами
 enemys = sprite.Group()
 enemys.add(enemy1)
 enemys.add(enemy2)
@@ -87,13 +95,18 @@ enemys.add(enemy5)
 bullets = sprite.Group()
 asteroids = sprite.Group()
 asteroids.add(asteroid)
+
+#подготовка игры
 window = display.set_mode((1366, 700))
 display.set_caption('Шутер')
 background = transform.scale(image.load('galaxy.jpg'), (1366, 768))
 clock = time.Clock()
 
+#переменные нужные для работы игрового цикла
 finish = False
 game = True
+
+#игровой цикл
 while game:
     points = font3.render ('Очки: ' + str(point), True, (255, 255, 255))
     lost = font2.render('Пропущенные враги: ' + str(Lost), True, (255, 255, 255))
